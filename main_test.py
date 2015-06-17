@@ -76,6 +76,57 @@ class RecentRecommand(tornado.web.RequestHandler):
         return
 
 
+class AppendRank(tornado.web.RequestHandler):
+
+    def get(self, *args, **kwargs):
+        page = self.get_argument("page", "")
+        # print(args)
+        # print(kwargs)
+        ret_dic = {"error": 0, "rank": [{"img": "路径", "text": ""}, {"img": \
+                    "路径", "text": ""}], "page": page}
+        ret_json = json.dumps(ret_dic)
+        self.write(ret_json)
+        return
+
+
+class ScopeRecommand(tornado.web.RequestHandler):
+
+    def get(self, *args, **kwargs):
+        x = self.get_argument("x", "")
+        y = self.get_argument("y", "")
+        page = self.get_argument("page", "")
+        ret_dic = {"error": 0, "return": [{"img": "路径", "fundID": "", "title": "", \
+                    "type": ""}, {"img": "路径", "text": "", "title": "", \
+                    "type": ""}]}
+        ret_json = json.dumps(ret_dic)
+        self.write(ret_json)
+        return
+
+
+class ScopeRecommandNet(tornado.web.RequestHandler):
+
+    def get(self, *args, **kwargs):
+        x = self.get_argument("x", "")
+        y = self.get_argument("y", "")
+        ret_dic = {"error": 0, "return": [{"img": "路径", "fundID": "", "title": "", \
+                    "distance": ""}, {"img": "路径", "fundID": "", "title": "", \
+                    "distance": ""}]}
+        ret_json = json.dumps(ret_dic)
+        self.write(ret_json)
+        return
+
+
+class ScopeRecommandDes(tornado.web.RequestHandler):
+
+    def get(self, *args, **kwargs):
+        _type = self.get_argument("type", 0)
+        ret_dic = {"error": 0, "return": [{"img": "路径", "text": "", "title": "", \
+                    "fundID": ""}, {"img": "路径", "text": "", "title": "", "fundID": ""}]}
+        ret_json = json.dumps(ret_dic)
+        self.write(ret_json)
+        return
+
+
 def main():
     tornado.options.parse_command_line()
     application = tornado.web.Application([
@@ -85,6 +136,10 @@ def main():
         (r"/koudaibank/recommend", Recommend),
         (r"/koudaibank/userLogin", UserLogin),
         (r"/koudaibank/recent_recommand", RecentRecommand),
+        (r"/koudaibank/append_rank", AppendRank),
+        (r"/koudaibank/scope_recommand", ScopeRecommand),
+        (r"/koudaibank/scope_recommand_net", ScopeRecommandNet),
+        (r"/koudaibank/scope_recommand_des", ScopeRecommandDes),
     ])
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(options.port)
