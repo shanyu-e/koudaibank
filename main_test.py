@@ -1,15 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import json
+import urllib2
 import tornado.web
 import tornado.httpserver
 import tornado
+import sys
 from tornado.options import options, define
 
 __author__ = 'dengjing'
 
 
 define("port", default=9090, help="run on the given port", type=int)
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 class InitLoad(tornado.web.RequestHandler):
@@ -127,6 +131,39 @@ class ScopeRecommandDes(tornado.web.RequestHandler):
         return
 
 
+class BindPhone(tornado.web.RequestHandler):
+
+    def get(self, *args, **kwargs):
+        user_name = self.get_argument("username", "dengjing")
+        phone_number = self.get_argument("phone", "")
+        api_account = "jiekou-clcs-02"
+        api_pswd = "Tch112345"
+        api_msg = u"注册验证码是：1111"
+        api_needstatus = "true"
+        api_query = "http://222.73.117.158/msg/HttpBatchSendSM"
+        url = api_query + "?account=" + api_account + "&pswd=" + api_pswd + "&mobile=" + phone_number \
+              + "&msg=" + api_msg + "&needstatus" + api_needstatus
+        req = urllib2.urlopen(url).read()
+        error_code = str(req).split(',')[1]
+        ret_dic = {"error": error_code, "user_name": user_name}
+        ret_json = json.dumps(ret_dic)
+        self.write(ret_json)
+        return
+
+
+class CheckPhone(tornado.web.RequestHandler):
+
+    def get(self, *args, **kwargs):
+        user_name = self.get_argument("username", "dengjing")
+        verify_code = self.get_argument("verify", "")
+        ret_dic = {"error": -1, "user_name": user_name}
+        if verify_code == "1111":
+            ret_dic["error"] = 0
+        ret_json = json.dumps(ret_dic)
+        self.write(ret_json)
+        return
+
+
 def main():
     tornado.options.parse_command_line()
     application = tornado.web.Application([
@@ -140,6 +177,8 @@ def main():
         (r"/koudaibank/scope_recommand", ScopeRecommand),
         (r"/koudaibank/scope_recommand_net", ScopeRecommandNet),
         (r"/koudaibank/scope_recommand_des", ScopeRecommandDes),
+        (r"/koudaibank/bind_phone", BindPhone),
+        (r"/koudaibank/check_phone", CheckPhone),
     ])
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(options.port)
