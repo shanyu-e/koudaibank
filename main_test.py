@@ -120,8 +120,10 @@ class BindPhone(tornado.web.RequestHandler):
     def get(self, *args, **kwargs):
         user_name = self.get_argument("username", "dengjing")
         phone_number = self.get_argument("phone", "")
-        api_account = "jiekou-clcs-02"
-        api_pswd = "Tch112345"
+        # api_account = "jiekou-clcs-02"
+        api_account = "qijing123"
+        # api_pswd = "Tch112345"
+        api_pswd = "Qijing888"
         api_msg = u"注册验证码是：1111"
         api_needstatus = "true"
         api_query = "http://222.73.117.158/msg/HttpBatchSendSM"
