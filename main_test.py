@@ -1,12 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import json
+import random
 import urllib2
 import tornado.web
 import tornado.httpserver
 import tornado
 import sys
 from tornado.options import options, define
+import MySQLdb
 
 __author__ = 'dengjing'
 
@@ -14,6 +16,16 @@ define("port", default=9090, help="run on the given port", type=int)
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+# from backend.backend import settings
+# import os
+# from django.core.management import
+# setup_environ(settings)
+# sys.path.append('/Users/dengjing/mywb/koudaibank/backend/bankend/')
+# os.environ['DJANGO_SETTING_MODULE'] = 'backend.settings'
+# from p1.models import TmpAuth
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'backend.backend.settings'
+from backend.p1.models import TmpAuth
 
 class InitLoad(tornado.web.RequestHandler):
     def get(self, *args, **kwargs):
@@ -124,7 +136,13 @@ class BindPhone(tornado.web.RequestHandler):
         api_account = "qijing123"
         # api_pswd = "Tch112345"
         api_pswd = "Qijing888"
-        api_msg = u"注册验证码是：1111"
+        # api_msg = u"注册验证码是：1111"
+        auth = TmpAuth.objects.get(username=user_name)
+        # print auth.username
+        auth.tmpcode = random.randint(0, 9999)
+        # print auth.tmpcode
+        auth.save()
+        api_msg = u"注册验证码是：%d" % auth.tmpcode
         api_needstatus = "true"
         api_query = "http://222.73.117.158/msg/HttpBatchSendSM"
         url = api_query + "?account=" + api_account + "&pswd=" + api_pswd + "&mobile=" + phone_number \
@@ -142,7 +160,8 @@ class CheckPhone(tornado.web.RequestHandler):
         user_name = self.get_argument("username", "dengjing")
         verify_code = self.get_argument("verify", "")
         ret_dic = {"error": -1, "user_name": user_name}
-        if verify_code == "1111":
+        auth = TmpAuth.objects.get(username=user_name)
+        if verify_code == str(auth.tmpcode):
             ret_dic["error"] = 0
         ret_json = json.dumps(ret_dic)
         self.write(ret_json)

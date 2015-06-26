@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+# from backend import backend
+
+# DJANGO_SETTINGS_MODULE = backend.settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'r0-awb4q-qr1n+zqi+fucbohnmzt%l-z(5ee(^j-+p#iwzk62l'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
+# DEBUG = True
 DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '*']
@@ -76,21 +79,32 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
-DATABASES = {
-    #'default': {
-    #    'ENGINE': 'django.db.backends.sqlite3',
-    #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    #}
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "p1",
-        "USER": "root",
-        "PASSWORD": "123456",
-        "HOST": "",
-        "PORT": "3306",
+if DEBUG == False:
+    DATABASES = {
+        #'default': {
+        #    'ENGINE': 'django.db.backends.sqlite3',
+        #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        #}
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "p1",
+            "USER": "root",
+            "PASSWORD": "123456",
+            "HOST": "",
+            "PORT": "3306",
+        }
     }
-}
+elif DEBUG == True:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "p1",
+            "USER": "root",
+            "PASSWORD": "123456",
+            "HOST": "",
+            "PORT": "3306",
+        }
+    }
 
 
 # Internationalization
