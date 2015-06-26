@@ -8,7 +8,6 @@ import tornado.httpserver
 import tornado
 import sys
 from tornado.options import options, define
-import MySQLdb
 
 __author__ = 'dengjing'
 
