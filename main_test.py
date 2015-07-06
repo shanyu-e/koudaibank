@@ -140,6 +140,7 @@ class BindPhone(tornado.web.RequestHandler):
             auth = TmpAuth.objects.get(username=user_name)
         except:
             raise SystemExit
+            sys.exit()
         # print auth.username
         auth.tmpcode = random.randint(1000, 9999)
         # print auth.tmpcode
