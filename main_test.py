@@ -136,7 +136,10 @@ class BindPhone(tornado.web.RequestHandler):
         # api_pswd = "Tch112345"
         api_pswd = "Qijing888"
         # api_msg = u"注册验证码是：1111"
-        auth = TmpAuth.objects.get(username=user_name)
+        try:
+            auth = TmpAuth.objects.get(username=user_name)
+        except:
+            raise SystemExit
         # print auth.username
         auth.tmpcode = random.randint(1000, 9999)
         # print auth.tmpcode
