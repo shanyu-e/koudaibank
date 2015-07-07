@@ -3,8 +3,8 @@
 import json
 import random
 import urllib2
-import django
 import tornado.web
+import django.db
 import tornado.httpserver
 import tornado
 import sys
@@ -140,7 +140,7 @@ class BindPhone(tornado.web.RequestHandler):
         try:
             auth = TmpAuth.objects.get(username=user_name)
         except:
-            django.db.close_connection()
+            django.db.close_old_connections()
             # sys.exit()
             # raise SystemExit
             auth = TmpAuth.objects.get(username=user_name)
